@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Version-agnostic core of Content Calendar.
+    Intentionally has NO Umbraco package references so it can be shared unchanged by the
+    v13 (net8.0), v17 and future v18 (net10.0) editions. Anything that needs Umbraco APIs
+    belongs in an edition-specific IContentCalendarRepository implementation instead.
+  -->
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <RootNamespace>ContentCalendar.Core</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <Description>Version-agnostic models, abstractions and query logic for the Content Calendar Umbraco package.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="ContentCalendar.Core.Tests" />
+  </ItemGroup>
+</Project>
+

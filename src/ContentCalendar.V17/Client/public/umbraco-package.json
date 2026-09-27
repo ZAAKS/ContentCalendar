@@ -1,0 +1,14 @@
+{
+  "id": "ContentCalendar",
+  "name": "Content Calendar",
+  "version": "1.0.0",
+  "allowTelemetry": true,
+  "extensions": [
+    {
+      "name": "Content Calendar Bundle",
+      "alias": "ContentCalendar.Bundle",
+      "type": "bundle",
+      "js": "/App_Plugins/ContentCalendar/content-calendar.js"
+    }
+  ]
+}

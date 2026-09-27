@@ -1,0 +1,31 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageFloatingVersionsEnabled>true</CentralPackageFloatingVersionsEnabled>
+    <!-- Must match UmbracoAppLocalIcuVersion in ContentCalendar.Web17.csproj. -->
+    <UmbracoAppLocalIcuVersion Condition="'$(UmbracoAppLocalIcuVersion)' == ''">72.1.0.3</UmbracoAppLocalIcuVersion>
+    <!--
+      Umbraco 17 edition dependency range.
+      Lower bound: 17.2.0 is the first 17.x release with IContentPermissionService.FilterAuthorizedAccessAsync,
+      which the v17 repository uses for batched permission filtering.
+      Upper bound: exclusive 18.0.0 so NuGet refuses to install the v17 edition into a v16 or v18 site.
+      Future editions (v13, v18) add their own range property here and use VersionOverride in their projects.
+    -->
+    <Umbraco17VersionRange>[17.2.0, 18.0.0)</Umbraco17VersionRange>
+  </PropertyGroup>
+  <ItemGroup Label="Umbraco 17 edition (package code)">
+    <PackageVersion Include="Umbraco.Cms.Api.Management" Version="$(Umbraco17VersionRange)" />
+  </ItemGroup>
+  <ItemGroup Label="Umbraco 17 dev site (not shipped)">
+    <PackageVersion Include="Umbraco.Cms" Version="17.7.0" />
+    <PackageVersion Include="Umbraco.Cms.DevelopmentMode.Backoffice" Version="17.7.0" />
+    <PackageVersion Include="Microsoft.ICU.ICU4C.Runtime" Version="$(UmbracoAppLocalIcuVersion)" />
+    <!-- Clean starter kit by Paul Seal: 7.x targets Umbraco 17 (8.x is Umbraco 18). -->
+    <PackageVersion Include="Clean" Version="7.0.8" />
+  </ItemGroup>
+  <ItemGroup Label="Tests">
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageVersion Include="xunit" Version="2.9.3" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.4" />
+  </ItemGroup>
+</Project>
