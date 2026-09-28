@@ -8,9 +8,9 @@
   <PropertyGroup>
     <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <RootNamespace>ContentCalendar.Core</RootNamespace>
-    <IsPackable>true</IsPackable>
-    <Title>Content Calendar Core</Title>
-    <Description>Version-agnostic models, abstractions and query logic for the Content Calendar Umbraco package. Install ContentCalendar.V17 instead; this package is a dependency.</Description>
+    <!-- Not a NuGet package of its own: ContentCalendar.Vxx embeds this DLL. -->
+    <IsPackable>false</IsPackable>
+    <Description>Version-agnostic models, abstractions and query logic for the Content Calendar Umbraco package.</Description>
   </PropertyGroup>
 
   <ItemGroup>

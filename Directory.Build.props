@@ -20,7 +20,7 @@
     <!-- Only the installable edition package (ContentCalendar.Vxx) adds the umbraco-marketplace tag. -->
     <PackageTags>umbraco;umbraco-cms;calendar;content-calendar</PackageTags>
 
-    <!-- Opt-in per project: Core and each edition package (ContentCalendar.Vxx) are packable. -->
+    <!-- Opt-in per project: only the edition packages (ContentCalendar.Vxx) are packable; Core is embedded in them. -->
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 </Project>

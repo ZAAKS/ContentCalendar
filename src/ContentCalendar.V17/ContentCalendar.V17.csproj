@@ -9,7 +9,8 @@
       - Client/                                      backoffice front-end (Lit + TypeScript, built with Vite)
       - wwwroot/App_Plugins/ContentCalendar          Vite output, shipped as static web assets
                                                      (served at /App_Plugins/ContentCalendar/...)
-    Version-agnostic code lives in ContentCalendar.Core (its own package, shared with future editions).
+    Version-agnostic code lives in ContentCalendar.Core (shared with future editions). It is not a package of its own:
+    its DLL is embedded in this package (see CopyProjectReferencesToPackage below).
     The Umbraco reference pins the supported range, so installing into another major fails at NuGet restore.
   -->
   <PropertyGroup>
@@ -36,8 +37,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ContentCalendar.Core\ContentCalendar.Core.csproj" />
+    <!-- PrivateAssets: no NuGet dependency on ContentCalendar.Core; its DLL ships inside this package instead. -->
+    <ProjectReference Include="..\ContentCalendar.Core\ContentCalendar.Core.csproj" PrivateAssets="all" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+  </PropertyGroup>
+
+  <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="BuildOnlySettings;ResolveReferences">
+    <ItemGroup>
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
+    </ItemGroup>
+  </Target>
 
   <ItemGroup>
     <None Include="Client\public\umbraco-package.json" Pack="false" />
