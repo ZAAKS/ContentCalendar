@@ -43,7 +43,7 @@ jobs:
         run: dotnet build ContentCalendar.sln -c Release
 
       - name: Pack
-        run: dotnet pack src/ContentCalendar.V17/ContentCalendar.V17.csproj -c Release --no-build -o ./artifacts
+        run: dotnet pack src/ContentCalendar.V17/ContentCalendar.V17.csproj -c Release -o ./artifacts
 
       - name: Upload package
         uses: actions/upload-artifact@v4
