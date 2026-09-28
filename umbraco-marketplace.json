@@ -42,6 +42,10 @@
       "Caption": "Infinite editing: click an item to edit it in a side drawer without leaving the calendar"
     },
     {
+      "ImageUrl": "https://raw.githubusercontent.com/ZAAKS/ContentCalendar/main/screenshots/day-list.png",
+      "Caption": "Click +N more on a busy day to see all of its items in a list"
+    },
+    {
       "ImageUrl": "https://raw.githubusercontent.com/ZAAKS/ContentCalendar/main/screenshots/child-items.png",
       "Caption": "Calendar view for the Child items of a page, next to the Grid and List views"
     }

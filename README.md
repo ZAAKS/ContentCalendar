@@ -33,6 +33,11 @@ Click an item in the calendar and it opens in a side drawer, just like the conte
 
 ![Infinite editing in a side drawer](screenshots/infinite-editing.png)
 
+### 📋 **Busy Days at a Glance**
+When a day has more items than fit in the cell, click **+N more** to open a list of everything on that day, with document type, date and time, and state. Click **Open** to edit an item.
+
+![All items of a day in a list](screenshots/day-list.png)
+
 ### 📂 **Child Items Calendar**
 Add **Content Calendar** as a layout to any Collection data type and a **Calendar** view appears next to the Grid and List views in **Child items**. It shows the child items of that page only.
 
