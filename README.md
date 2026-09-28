@@ -138,15 +138,6 @@ Content Calendar works out of the box. All settings are optional.
 
 ---
 
-## 🚀 Coming Soon
-
-We're working on new features:
-
-- 🔎 **Filters**: Filter by document type or author
-- 🆕 **More editions**: Support for upcoming Umbraco versions
-
----
-
 ## 🐛 Issues & Support
 
 Found a bug or have a suggestion? We'd love to hear from you!
@@ -159,18 +150,6 @@ When reporting an issue, please include:
 - Error messages (if any)
 - Your Umbraco and Content Calendar versions
 - Steps to reproduce
-
----
-
-## 🛠️ Development
-
-```bash
-dotnet build ContentCalendar.sln
-cd src/ContentCalendar.Web17
-dotnet run --launch-profile Umbraco.Web.UI   # https://localhost:44330/umbraco
-```
-
-The backoffice client lives in `src/ContentCalendar.V17/Client` and is built with npm automatically by `dotnet build`.
 
 ---
 

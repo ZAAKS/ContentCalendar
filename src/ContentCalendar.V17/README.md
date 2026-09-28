@@ -135,15 +135,6 @@ Content Calendar works out of the box. All settings are optional.
 
 ---
 
-## 🚀 Coming Soon
-
-We're working on new features:
-
-- 🔎 **Filters**: Filter by document type or author
-- 🆕 **More editions**: Support for upcoming Umbraco versions
-
----
-
 ## 🐛 Issues & Support
 
 Found a bug or have a suggestion? We'd love to hear from you!
