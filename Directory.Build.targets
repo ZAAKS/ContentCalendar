@@ -1,13 +1,19 @@
 <Project>
   <!-- Evaluated after each project's own properties, so IsPackable is known here. -->
   <PropertyGroup Condition="'$(IsPackable)' == 'true'">
+    <!-- A project's own README.md (absolute image URLs, for nuget.org / Marketplace) wins over the repo README. -->
+    <PackageReadmeSource Condition="Exists('$(MSBuildProjectDirectory)\README.md')">$(MSBuildProjectDirectory)\README.md</PackageReadmeSource>
+    <PackageReadmeSource Condition="'$(PackageReadmeSource)' == ''">$(MSBuildThisFileDirectory)README.md</PackageReadmeSource>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
     <IncludeSymbols Condition="'$(IncludeSymbols)' == ''">true</IncludeSymbols>
     <SymbolPackageFormat Condition="'$(SymbolPackageFormat)' == ''">snupkg</SymbolPackageFormat>
     <PackageOutputPath>$(MSBuildThisFileDirectory)artifacts\packages</PackageOutputPath>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(IsPackable)' == 'true'">
-    <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" Visible="false" />
+    <None Remove="README.md" />
+    <None Include="$(PackageReadmeSource)" Pack="true" PackagePath="\README.md" Visible="false" />
+    <None Include="$(MSBuildThisFileDirectory)icon.png" Pack="true" PackagePath="\" Visible="false" />
   </ItemGroup>
 </Project>

@@ -4,11 +4,8 @@
 
 Content Calendar shows which pages were **created**, are **scheduled to publish** or **scheduled to unpublish**, and were **deleted**, in a calendar that looks and feels like Umbraco itself. Use it as a dashboard in the Content section, or as a **Calendar** view for the child items of any page.
 
-| Package | NuGet |
-| ------- | ----- |
-| ContentCalendar.V17 | [![NuGet](https://img.shields.io/nuget/v/ContentCalendar.V17)](https://www.nuget.org/packages/ContentCalendar.V17) [![NuGet downloads](https://img.shields.io/nuget/dt/ContentCalendar.V17.svg)](https://www.nuget.org/packages/ContentCalendar.V17) |
 
-![Content Calendar dashboard](screenshots/dashboard.png)
+![Content Calendar dashboard](https://raw.githubusercontent.com/ZAAKS/ContentCalendar/main/screenshots/dashboard.png)
 
 ---
 
@@ -31,12 +28,12 @@ One tile per state shows how many items there are in the current period, for exa
 ### ✍️ **Infinite Editing**
 Click an item in the calendar and it opens in a side drawer, just like the content picker. Edit, save and publish without leaving the calendar; the calendar refreshes when you close the drawer.
 
-![Infinite editing in a side drawer](screenshots/infinite-editing.png)
+![Infinite editing in a side drawer](https://raw.githubusercontent.com/ZAAKS/ContentCalendar/main/screenshots/infinite-editing.png)
 
 ### 📂 **Child Items Calendar**
 Add **Content Calendar** as a layout to any Collection data type and a **Calendar** view appears next to the Grid and List views in **Child items**. It shows the child items of that page only.
 
-![Calendar view for child items](screenshots/child-items.png)
+![Calendar view for child items](https://raw.githubusercontent.com/ZAAKS/ContentCalendar/main/screenshots/child-items.png)
 
 ### 🔒 **Respects Permissions**
 Users only see content they have access to (start nodes and browse permissions). Deleted items are only shown to users with access to the content root, the same rule as the recycle bin.
@@ -157,21 +154,9 @@ When reporting an issue, please include:
 
 ---
 
-## 🛠️ Development
-
-```bash
-dotnet build ContentCalendar.sln
-cd src/ContentCalendar.Web17
-dotnet run --launch-profile Umbraco.Web.UI   # https://localhost:44330/umbraco
-```
-
-The backoffice client lives in `src/ContentCalendar.V17/Client` and is built with npm automatically by `dotnet build`.
-
----
-
 ## 📜 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/ZAAKS/ContentCalendar/blob/main/LICENSE) file for details.
 
 ---
 

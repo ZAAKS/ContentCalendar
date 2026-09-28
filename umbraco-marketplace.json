@@ -1,0 +1,49 @@
+{
+  "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
+  "AddOnPackagesRequiredForUmbracoCloud": [],
+  "AuthorDetails": {
+    "Name": "ZAAKS!",
+    "Description": "ZAAKS! is a digital agency specializing in Umbraco CMS, .NET development, AI-powered solutions, and custom web platforms. With decades of experience in the Microsoft and Umbraco ecosystem, ZAAKS! focuses on delivering scalable, user-friendly, and future-ready digital experiences tailored to modern business needs.",
+    "Url": "https://www.zaaks.nl/",
+    "ImageUrl": "https://zaaks.nl/media/g2tdtsvt/zaaks_umbraco__logo.png",
+    "Contributors": [
+      {
+        "Name": "Pasang Tamang",
+        "Url": "https://github.com/TechPdo"
+      }
+    ],
+    "SyncContributorsFromRepository": false
+  },
+  "Category": "Editor Tools",
+  "AlternateCategory": "Campaign & Marketing",
+  "Title": "Content Calendar",
+  "Description": "A content calendar for the Umbraco backoffice. See, per day, which content was created, is scheduled to publish or unpublish, and was deleted. Available as a Content section dashboard and as a Calendar view for Child items, with Month, Week, Day and List views and infinite editing in a side drawer.",
+  "DocumentationUrl": "https://github.com/ZAAKS/ContentCalendar#readme",
+  "IssueTrackerUrl": "https://github.com/ZAAKS/ContentCalendar/issues",
+  "IsSubPackageOf": "",
+  "PackageType": "Package",
+  "PackagesByAuthor": [],
+  "RelatedPackages": [],
+  "LicenseTypes": [ "Free" ],
+  "Tags": [ "calendar", "content calendar", "editorial calendar", "scheduling", "scheduled publishing", "dashboard", "collection view", "backoffice", "editor tools" ],
+  "VersionSpecificPackageIds": [
+    {
+      "UmbracoMajorVersion": 17,
+      "PackageId": "ContentCalendar.V17"
+    }
+  ],
+  "Screenshots": [
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/ZAAKS/ContentCalendar/main/screenshots/dashboard.png",
+      "Caption": "Content Calendar dashboard in the Content section, with state tiles and Month, Week, Day and List views"
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/ZAAKS/ContentCalendar/main/screenshots/infinite-editing.png",
+      "Caption": "Infinite editing: click an item to edit it in a side drawer without leaving the calendar"
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/ZAAKS/ContentCalendar/main/screenshots/child-items.png",
+      "Caption": "Calendar view for the Child items of a page, next to the Grid and List views"
+    }
+  ]
+}

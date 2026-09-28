@@ -8,11 +8,17 @@
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
 
     <Version>1.0.0</Version>
-    <Authors>ContentCalendar contributors</Authors>
-    <Company>ContentCalendar</Company>
-    <Copyright>Copyright © ContentCalendar contributors</Copyright>
+    <Authors>ZAAKS!</Authors>
+    <Company>ZAAKS!</Company>
+    <Product>Content Calendar</Product>
+    <Copyright>Copyright © 2026 ZAAKS!</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageTags>umbraco;umbraco-marketplace;calendar;content;scheduling;dashboard</PackageTags>
+    <PackageProjectUrl>https://github.com/ZAAKS/ContentCalendar</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ZAAKS/ContentCalendar</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <!-- Only the installable edition package (ContentCalendar.Vxx) adds the umbraco-marketplace tag. -->
+    <PackageTags>umbraco;umbraco-cms;calendar;content-calendar</PackageTags>
 
     <!-- Opt-in per project: Core and each edition package (ContentCalendar.Vxx) are packable. -->
     <IsPackable>false</IsPackable>

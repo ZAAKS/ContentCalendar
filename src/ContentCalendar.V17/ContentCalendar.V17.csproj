@@ -18,8 +18,10 @@
     <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
     <IsPackable>true</IsPackable>
     <PackageId>ContentCalendar.V17</PackageId>
-    <Title>Content Calendar for Umbraco 17</Title>
-    <Description>A Content section dashboard and Child items view showing, per day, what content was created, scheduled to publish or unpublish, and deleted, in a native-looking calendar.</Description>
+    <Title>Content Calendar</Title>
+    <Description>A content calendar for the Umbraco 17 backoffice. A Content section dashboard and a Child items (Collection) view show, per day, which content was created, is scheduled to publish or unpublish, and was deleted, with Month, Week, Day and List views and infinite editing in a side drawer.</Description>
+    <PackageTags>umbraco;umbraco-marketplace;umbraco-cms;umbraco-17;umbraco-package;umbraco-backoffice;calendar;content-calendar;editorial-calendar;scheduling;scheduled-publishing;dashboard;collection-view</PackageTags>
+    <PackageReleaseNotes>First release for Umbraco 17: Content Calendar dashboard, Child items calendar view, Month/Week/Day/List views, infinite editing, deleted and scheduled items.</PackageReleaseNotes>
     <!-- We compile against the lowest supported Umbraco (17.2.0); its transitive advisories are resolved by
          whatever (newer) Umbraco version the consuming site uses, so only audit our direct dependencies. -->
     <NuGetAuditMode>direct</NuGetAuditMode>
