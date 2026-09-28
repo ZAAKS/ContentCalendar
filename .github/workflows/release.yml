@@ -1,0 +1,89 @@
+name: Release
+
+# Manual only: Actions → Release → Run workflow, then enter the version.
+# Publishes ContentCalendar.V17 to nuget.org (owner is the account/organisation of NUGET_API_KEY),
+# then tags the commit and creates a GitHub release with the package attached.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (for example 1.0.0 or 1.1.0-beta.1)'
+        required: true
+        default: '1.0.0'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ github.event.inputs.version }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate version
+        run: |
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::'$VERSION' is not a valid version (expected e.g. 1.0.0 or 1.1.0-beta.1)."
+            exit 1
+          fi
+          if git rev-parse -q --verify "refs/tags/v$VERSION" >/dev/null; then
+            echo "::error::Tag v$VERSION already exists."
+            exit 1
+          fi
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: src/ContentCalendar.V17/Client/package-lock.json
+
+      - name: Install client dependencies
+        working-directory: src/ContentCalendar.V17/Client
+        run: npm ci --no-audit --no-fund
+
+      # Keep the backoffice manifest version in line with the NuGet version.
+      - name: Set umbraco-package.json version
+        working-directory: src/ContentCalendar.V17/Client/public
+        run: |
+          jq --arg v "$VERSION" '.version = $v' umbraco-package.json > umbraco-package.tmp
+          mv umbraco-package.tmp umbraco-package.json
+
+      - name: Pack
+        run: dotnet pack src/ContentCalendar.V17/ContentCalendar.V17.csproj -c Release -o ./artifacts -p:Version=$VERSION
+
+      - name: Publish to NuGet
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          dotnet nuget push "./artifacts/*.nupkg" \
+            --api-key "$NUGET_API_KEY" \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+
+      - name: Create tag and GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git tag "v$VERSION"
+          git push origin "v$VERSION"
+          PRERELEASE=""
+          if [[ "$VERSION" == *-* ]]; then PRERELEASE="--prerelease"; fi
+          gh release create "v$VERSION" ./artifacts/*.nupkg \
+            --title "Content Calendar $VERSION" \
+            --generate-notes $PRERELEASE
