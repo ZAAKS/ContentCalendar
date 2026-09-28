@@ -32,7 +32,7 @@ jobs:
 
       - name: Validate version
         run: |
-          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+          if ! [[ "$VERSION" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$ ]]; then
             echo "::error::'$VERSION' is not a valid version (expected e.g. 1.0.0 or 1.1.0-beta.1)."
             exit 1
           fi
@@ -67,14 +67,14 @@ jobs:
       - name: Pack
         run: dotnet pack src/ContentCalendar.V17/ContentCalendar.V17.csproj -c Release -o ./artifacts -p:Version=$VERSION
 
+      # No --skip-duplicate: an existing version must fail here, so NuGet and the GitHub release never differ.
       - name: Publish to NuGet
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: |
           dotnet nuget push "./artifacts/*.nupkg" \
             --api-key "$NUGET_API_KEY" \
-            --source https://api.nuget.org/v3/index.json \
-            --skip-duplicate
+            --source https://api.nuget.org/v3/index.json
 
       - name: Create tag and GitHub release
         env:

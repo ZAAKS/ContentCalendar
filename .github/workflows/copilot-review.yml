@@ -2,8 +2,9 @@ name: Copilot code review
 
 # Requests a review from GitHub Copilot on every pull request (not drafts) to main.
 # Review guidance for Copilot lives in .github/copilot-instructions.md.
+# pull_request_target so PRs from forks get a write token too; safe because no PR code is checked out or run.
 on:
-  pull_request:
+  pull_request_target:
     branches: [ main ]
     types: [ opened, reopened, ready_for_review ]
 
