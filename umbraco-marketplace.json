@@ -25,7 +25,7 @@
   "PackagesByAuthor": [],
   "RelatedPackages": [],
   "LicenseTypes": [ "Free" ],
-  "Tags": [ "calendar", "content calendar", "editorial calendar", "scheduling", "scheduled publishing", "dashboard", "collection view", "backoffice", "editor tools" ],
+  "Tags": [ "umbraco", "plugin", "package", "umbraco-marketplace" ],
   "VersionSpecificPackageIds": [
     {
       "UmbracoMajorVersion": 17,
