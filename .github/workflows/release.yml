@@ -1,8 +1,9 @@
 name: Release
 
 # Manual only: Actions → Release → Run workflow, then enter the version.
-# Publishes ContentCalendar.V17 to nuget.org (owner is the account/organisation of NUGET_API_KEY),
-# then tags the commit and creates a GitHub release with the package attached.
+# Publishes ContentCalendar.V17 (Umbraco 17) and ContentCalendar.V18 (Umbraco 18) with the same version
+# to nuget.org (owner is the account/organisation of NUGET_API_KEY),
+# then tags the commit and creates a GitHub release with both packages attached.
 on:
   workflow_dispatch:
     inputs:
@@ -51,21 +52,23 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-          cache-dependency-path: src/ContentCalendar.V17/Client/package-lock.json
+          cache-dependency-path: src/ContentCalendar.Backoffice/Client/package-lock.json
 
       - name: Install client dependencies
-        working-directory: src/ContentCalendar.V17/Client
+        working-directory: src/ContentCalendar.Backoffice/Client
         run: npm ci --no-audit --no-fund
 
       # Keep the backoffice manifest version in line with the NuGet version.
       - name: Set umbraco-package.json version
-        working-directory: src/ContentCalendar.V17/Client/public
+        working-directory: src/ContentCalendar.Backoffice/Client/public
         run: |
           jq --arg v "$VERSION" '.version = $v' umbraco-package.json > umbraco-package.tmp
           mv umbraco-package.tmp umbraco-package.json
 
       - name: Pack
-        run: dotnet pack src/ContentCalendar.V17/ContentCalendar.V17.csproj -c Release -o ./artifacts -p:Version=$VERSION
+        run: |
+          dotnet pack src/ContentCalendar.V17/ContentCalendar.V17.csproj -c Release -o ./artifacts -p:Version=$VERSION
+          dotnet pack src/ContentCalendar.V18/ContentCalendar.V18.csproj -c Release -o ./artifacts -p:Version=$VERSION
 
       # No --skip-duplicate: an existing version must fail here, so NuGet and the GitHub release never differ.
       - name: Publish to NuGet

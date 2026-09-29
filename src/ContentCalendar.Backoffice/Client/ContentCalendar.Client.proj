@@ -1,0 +1,25 @@
+<Project DefaultTargets="Build">
+  <!--
+    Builds the shared backoffice client (Lit + TypeScript, Vite) into dist/.
+    Every edition (ContentCalendar.V17, ContentCalendar.V18) calls this project's Build target and copies dist/ into
+    its own wwwroot/App_Plugins/ContentCalendar. MSBuild runs a project's target only once per build, so parallel
+    edition builds share one npm run instead of racing on node_modules and dist/.
+    Incremental: npm only runs when a client source is newer than the bundle.
+  -->
+  <PropertyGroup>
+    <ClientDirectory>$(MSBuildThisFileDirectory)</ClientDirectory>
+    <ClientOutputFile>$(MSBuildThisFileDirectory)dist\content-calendar.js</ClientOutputFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ClientBuildInput Include="src\**\*;public\**\*;package.json;package-lock.json;vite.config.ts;tsconfig.json" />
+  </ItemGroup>
+
+  <Target Name="NpmInstall" Condition="!Exists('$(ClientDirectory)node_modules')">
+    <Exec Command="npm ci --no-audit --no-fund" WorkingDirectory="$(ClientDirectory)" />
+  </Target>
+
+  <Target Name="Build" DependsOnTargets="NpmInstall" Inputs="@(ClientBuildInput)" Outputs="$(ClientOutputFile)">
+    <Exec Command="npm run build" WorkingDirectory="$(ClientDirectory)" />
+  </Target>
+</Project>

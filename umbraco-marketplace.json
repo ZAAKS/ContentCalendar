@@ -30,6 +30,10 @@
     {
       "UmbracoMajorVersion": 17,
       "PackageId": "ContentCalendar.V17"
+    },
+    {
+      "UmbracoMajorVersion": 18,
+      "PackageId": "ContentCalendar.V18"
     }
   ],
   "Screenshots": [

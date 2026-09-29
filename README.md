@@ -10,6 +10,7 @@ Content Calendar shows which pages were **created**, are **scheduled to publish*
 | Package | NuGet |
 | ------- | ----- |
 | ContentCalendar.V17 | [![NuGet](https://img.shields.io/nuget/v/ContentCalendar.V17)](https://www.nuget.org/packages/ContentCalendar.V17) [![NuGet downloads](https://img.shields.io/nuget/dt/ContentCalendar.V17.svg)](https://www.nuget.org/packages/ContentCalendar.V17) |
+| ContentCalendar.V18 | [![NuGet](https://img.shields.io/nuget/v/ContentCalendar.V18)](https://www.nuget.org/packages/ContentCalendar.V18) [![NuGet downloads](https://img.shields.io/nuget/dt/ContentCalendar.V18.svg)](https://www.nuget.org/packages/ContentCalendar.V18) |
 
 ![Content Calendar dashboard](screenshots/dashboard.png)
 
@@ -56,16 +57,31 @@ Built with Umbraco's own UI library, so it follows the backoffice look, keyboard
 
 ## 📦 Installation
 
+Install the package that matches your Umbraco version:
+
+| Umbraco version | Package |
+| --------------- | ------- |
+| 17.x | `ContentCalendar.V17` |
+| 18.x | `ContentCalendar.V18` |
+
 ### Using .NET CLI
 
 ```bash
+# Umbraco 17
 dotnet add package ContentCalendar.V17
+
+# Umbraco 18
+dotnet add package ContentCalendar.V18
 ```
 
 ### Using NuGet Package Manager
 
 ```bash
+# Umbraco 17
 Install-Package ContentCalendar.V17
+
+# Umbraco 18
+Install-Package ContentCalendar.V18
 ```
 
 ### Using Visual Studio
@@ -73,12 +89,12 @@ Install-Package ContentCalendar.V17
 1. Right-click on your project in Visual Studio
 2. Click "Manage NuGet Packages..."
 3. Click the "Browse" tab
-4. Search for: `ContentCalendar.V17`
+4. Search for: `ContentCalendar.V17` (Umbraco 17) or `ContentCalendar.V18` (Umbraco 18)
 5. Click "Install"
 
 ### Requirements
 
-- Umbraco CMS **17.2** or later (17.x)
+- Umbraco CMS **17.2** or later (17.x) with `ContentCalendar.V17`, or Umbraco CMS **18.0** or later (18.x) with `ContentCalendar.V18`
 - .NET **10**
 
 No database migrations, no extra tables: the calendar reads the data Umbraco already stores.

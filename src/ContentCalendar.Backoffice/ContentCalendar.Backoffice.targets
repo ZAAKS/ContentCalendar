@@ -1,0 +1,53 @@
+<Project>
+  <!--
+    Build logic shared by every edition package (ContentCalendar.V17, ContentCalendar.V18). Imported by the edition csproj
+    together with ContentCalendar.Backoffice.projitems (the shared C# source).
+      - embeds ContentCalendar.Core in the package (no separate Core package);
+      - builds the shared backoffice client once and ships it as static web assets under /App_Plugins/ContentCalendar.
+    Skip the client with -p:SkipClientBuild=true (e.g. while running `npm run watch:v17` / `watch:v18` in Client/ yourself).
+  -->
+  <PropertyGroup>
+    <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
+    <ContentCalendarClientProject>$(MSBuildThisFileDirectory)Client\ContentCalendar.Client.proj</ContentCalendarClientProject>
+    <ContentCalendarClientDist>$(MSBuildThisFileDirectory)Client\dist\</ContentCalendarClientDist>
+    <ContentCalendarClientTarget>$(MSBuildProjectDirectory)\wwwroot\App_Plugins\ContentCalendar\</ContentCalendarClientTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- PrivateAssets: no NuGet dependency on ContentCalendar.Core; its DLL ships inside the edition package instead. -->
+    <ProjectReference Include="$(MSBuildThisFileDirectory)..\ContentCalendar.Core\ContentCalendar.Core.csproj" PrivateAssets="all" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+  </PropertyGroup>
+
+  <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="BuildOnlySettings;ResolveReferences">
+    <ItemGroup>
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Runs before static web assets are discovered, so `dotnet build`/`dotnet pack` always ship a fresh bundle. -->
+  <Target Name="ContentCalendarClientBuild"
+          BeforeTargets="ResolveStaticWebAssetsConfiguration;AssignTargetPaths"
+          Condition="'$(SkipClientBuild)' != 'true'">
+    <MSBuild Projects="$(ContentCalendarClientProject)" Targets="Build" RemoveProperties="TargetFramework;RuntimeIdentifier" />
+
+    <ItemGroup>
+      <_ContentCalendarClientFile Include="$(ContentCalendarClientDist)**\*" />
+      <_ContentCalendarStaleFile Include="$(ContentCalendarClientTarget)**\*" />
+      <_ContentCalendarStaleFile Remove="@(_ContentCalendarClientFile->'$(ContentCalendarClientTarget)%(RecursiveDir)%(Filename)%(Extension)')" />
+    </ItemGroup>
+
+    <Error Condition="'@(_ContentCalendarClientFile)' == ''" Text="The Content Calendar client was not built: $(ContentCalendarClientDist) is empty." />
+    <Delete Files="@(_ContentCalendarStaleFile)" />
+    <Copy SourceFiles="@(_ContentCalendarClientFile)"
+          DestinationFiles="@(_ContentCalendarClientFile->'$(ContentCalendarClientTarget)%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true" />
+
+    <ItemGroup>
+      <Content Include="wwwroot\**" Exclude="@(Content)" />
+    </ItemGroup>
+  </Target>
+</Project>

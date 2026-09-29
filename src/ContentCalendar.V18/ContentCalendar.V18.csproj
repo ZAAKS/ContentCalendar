@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <!--
+    Content Calendar for Umbraco 18: the single installable NuGet package of the v18 edition.
+      dotnet add package ContentCalendar.V18
+
+    Only the Umbraco 18 specific code lives here:
+      - Composers/                                   DI registration and the Microsoft.AspNetCore.OpenApi document
+                                                     (Umbraco 18 replaced Swashbuckle SwaggerGen)
+    Shared with the other editions (see ContentCalendar.Backoffice.targets):
+      - ..\ContentCalendar.Backoffice                Management API controller, models, persistence and the backoffice client
+      - ..\ContentCalendar.Core                      version-agnostic models and query logic (DLL embedded in this package)
+      - wwwroot/App_Plugins/ContentCalendar          the built client, copied in at build time and shipped as static web assets
+    The Umbraco reference pins the supported range, so installing into another major fails at NuGet restore.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>ContentCalendar.V18</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <PackageId>ContentCalendar.V18</PackageId>
+    <Title>Content Calendar</Title>
+    <Description>A content calendar for the Umbraco 18 backoffice. A Content section dashboard and a Child items (Collection) view show, per day, which content was created, is scheduled to publish or unpublish, and was deleted, with Month, Week, Day and List views and infinite editing in a side drawer.</Description>
+    <PackageTags>umbraco;umbraco-marketplace;umbraco-cms;umbraco-18;umbraco-package;umbraco-backoffice;calendar;content-calendar;editorial-calendar;scheduling;scheduled-publishing;dashboard;collection-view</PackageTags>
+    <PackageReleaseNotes>See https://github.com/ZAAKS/ContentCalendar/releases for the changes in each version.</PackageReleaseNotes>
+    <!-- We compile against the lowest supported Umbraco (18.0.0); its transitive advisories are resolved by
+         whatever (newer) Umbraco version the consuming site uses, so only audit our direct dependencies. -->
+    <NuGetAuditMode>direct</NuGetAuditMode>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Supported Umbraco range: see Umbraco18VersionRange in Directory.Packages.props. -->
+    <PackageReference Include="Umbraco.Cms.Api.Management" VersionOverride="$(Umbraco18VersionRange)" />
+  </ItemGroup>
+
+  <Import Project="..\ContentCalendar.Backoffice\ContentCalendar.Backoffice.projitems" Label="Shared" />
+  <Import Project="..\ContentCalendar.Backoffice\ContentCalendar.Backoffice.targets" />
+</Project>
