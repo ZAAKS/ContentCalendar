@@ -41,6 +41,20 @@ jobs:
             echo "::error::Tag v$VERSION already exists."
             exit 1
           fi
+          # A version already on nuget.org for every package means there is nothing left to publish.
+          LOWER_VERSION=$(echo "$VERSION" | tr '[:upper:]' '[:lower:]')
+          PUBLISHED=0
+          for ID in contentcalendar.v17 contentcalendar.v18; do
+            if curl -fsSL "https://api.nuget.org/v3-flatcontainer/$ID/index.json" 2>/dev/null \
+              | jq -e --arg v "$LOWER_VERSION" '.versions | index($v)' >/dev/null; then
+              echo "::warning::$ID $VERSION is already on nuget.org and will be skipped."
+              PUBLISHED=$((PUBLISHED + 1))
+            fi
+          done
+          if [ "$PUBLISHED" -eq 2 ]; then
+            echo "::error::Version $VERSION is already on nuget.org for both packages."
+            exit 1
+          fi
 
       - name: Setup .NET 10
         uses: actions/setup-dotnet@v4
@@ -70,14 +84,16 @@ jobs:
           dotnet pack src/ContentCalendar.V17/ContentCalendar.V17.csproj -c Release -o ./artifacts -p:Version=$VERSION
           dotnet pack src/ContentCalendar.V18/ContentCalendar.V18.csproj -c Release -o ./artifacts -p:Version=$VERSION
 
-      # No --skip-duplicate: an existing version must fail here, so NuGet and the GitHub release never differ.
+      # --skip-duplicate makes a partial publish (V17 pushed, V18 failed) safe to re-run with the same version.
+      # Re-releasing a complete version is still blocked by the tag check and the nuget.org check in "Validate version".
       - name: Publish to NuGet
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: |
           dotnet nuget push "./artifacts/*.nupkg" \
             --api-key "$NUGET_API_KEY" \
-            --source https://api.nuget.org/v3/index.json
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
 
       - name: Create tag and GitHub release
         env:
