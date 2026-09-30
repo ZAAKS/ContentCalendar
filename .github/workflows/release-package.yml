@@ -38,17 +38,18 @@ jobs:
           fetch-depth: 0
 
       - name: Validate input
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           if [[ "$EDITION" != "17" && "$EDITION" != "18" ]]; then
             echo "::error::Unknown edition '$EDITION' (expected 17 or 18)."
             exit 1
           fi
-          if ! [[ "$VERSION" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$ ]]; then
+          # SemVer 2.0: numeric identifiers have no leading zeroes (1.0.0-01 is invalid, 1.0.0-0a is fine).
+          NUM='(0|[1-9][0-9]*)'
+          PRE_ID='(0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)'
+          if ! [[ "$VERSION" =~ ^$NUM\.$NUM\.$NUM(-$PRE_ID(\.$PRE_ID)*)?$ ]]; then
             echo "::error::'$VERSION' is not a valid version (expected e.g. 1.0.0 or 1.1.0-beta.1)."
-            exit 1
-          fi
-          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
-            echo "::error::Tag $TAG already exists: $PACKAGE_ID $VERSION has already been released."
             exit 1
           fi
           # Before per-edition tags, V17 was tagged v<version> (v1.0.0).
@@ -56,8 +57,22 @@ jobs:
             echo "::error::Tag v$VERSION already exists: $PACKAGE_ID $VERSION has already been released."
             exit 1
           fi
-          # Already on nuget.org without a tag means an earlier run failed after the push: re-running
-          # only creates the missing tag and GitHub release (the push below uses --skip-duplicate).
+          # An existing tag is only allowed to repair an earlier run of this commit that failed
+          # after pushing the tag (GitHub release or its package missing).
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            if [[ "$(git rev-list -n 1 "$TAG")" != "$(git rev-parse HEAD)" ]]; then
+              echo "::error::Tag $TAG already exists on another commit: $PACKAGE_ID $VERSION has already been released."
+              exit 1
+            fi
+            if gh release view "$TAG" --json assets --jq '.assets[].name' 2>/dev/null \
+              | grep -qxF "$PACKAGE_ID.$VERSION.nupkg"; then
+              echo "::error::$PACKAGE_ID $VERSION has already been released (tag and GitHub release exist)."
+              exit 1
+            fi
+            echo "::warning::Tag $TAG already exists on this commit; completing the unfinished release."
+          fi
+          # Already on nuget.org means an earlier run failed after the push: the push below is skipped
+          # (--skip-duplicate) and only the tag and GitHub release are created.
           ID_LOWER=$(echo "$PACKAGE_ID" | tr '[:upper:]' '[:lower:]')
           VERSION_LOWER=$(echo "$VERSION" | tr '[:upper:]' '[:lower:]')
           if curl -fsSL "https://api.nuget.org/v3-flatcontainer/$ID_LOWER/index.json" 2>/dev/null \
@@ -104,17 +119,26 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          ASSET="./artifacts/$PACKAGE_ID.$VERSION.nupkg"
           # Release notes start at this edition's previous release (V17 also has the legacy v<version> tags).
           PATTERNS=("ContentCalendar.V$EDITION-*")
           if [[ "$EDITION" == "17" ]]; then PATTERNS+=("v[0-9]*"); fi
-          PREVIOUS_TAG=$(git tag --list "${PATTERNS[@]}" --sort=-creatordate | head -n 1)
+          PREVIOUS_TAG=$(git tag --list "${PATTERNS[@]}" --sort=-creatordate | { grep -vxF "$TAG" || true; } | head -n 1)
           NOTES_START=()
           if [[ -n "$PREVIOUS_TAG" ]]; then NOTES_START=(--notes-start-tag "$PREVIOUS_TAG"); fi
-
-          git tag "$TAG"
-          git push origin "$TAG"
           PRERELEASE=()
           if [[ "$VERSION" == *-* ]]; then PRERELEASE=(--prerelease); fi
-          gh release create "$TAG" "./artifacts/$PACKAGE_ID.$VERSION.nupkg" \
-            --title "Content Calendar for Umbraco $EDITION ($PACKAGE_ID $VERSION)" \
-            --generate-notes "${NOTES_START[@]}" "${PRERELEASE[@]}"
+
+          # Each part is skipped when an earlier, failed run of this commit already did it.
+          if ! git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            git tag "$TAG"
+            git push origin "$TAG"
+          fi
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$ASSET" --clobber
+          else
+            gh release create "$TAG" "$ASSET" \
+              --verify-tag \
+              --title "Content Calendar for Umbraco $EDITION ($PACKAGE_ID $VERSION)" \
+              --generate-notes "${NOTES_START[@]}" "${PRERELEASE[@]}"
+          fi
