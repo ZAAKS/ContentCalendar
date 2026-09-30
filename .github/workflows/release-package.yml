@@ -1,0 +1,120 @@
+name: Release package
+
+# Reusable release job, called by release-v17.yml and release-v18.yml (not run directly).
+# Packs one edition (ContentCalendar.V<edition>), publishes it to nuget.org (owner is the account/organisation
+# of NUGET_API_KEY), then tags the commit as ContentCalendar.V<edition>-<version> and creates a GitHub release
+# with the package attached. Each edition has its own tags, so its versions are independent of the other edition.
+on:
+  workflow_call:
+    inputs:
+      edition:
+        description: 'Umbraco major version of the edition (17 or 18)'
+        required: true
+        type: string
+      version:
+        description: 'Version to publish (for example 1.0.0 or 1.1.0-beta.1)'
+        required: true
+        type: string
+    secrets:
+      NUGET_API_KEY:
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      EDITION: ${{ inputs.edition }}
+      VERSION: ${{ inputs.version }}
+      PACKAGE_ID: ContentCalendar.V${{ inputs.edition }}
+      TAG: ContentCalendar.V${{ inputs.edition }}-${{ inputs.version }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate input
+        run: |
+          if [[ "$EDITION" != "17" && "$EDITION" != "18" ]]; then
+            echo "::error::Unknown edition '$EDITION' (expected 17 or 18)."
+            exit 1
+          fi
+          if ! [[ "$VERSION" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$ ]]; then
+            echo "::error::'$VERSION' is not a valid version (expected e.g. 1.0.0 or 1.1.0-beta.1)."
+            exit 1
+          fi
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            echo "::error::Tag $TAG already exists: $PACKAGE_ID $VERSION has already been released."
+            exit 1
+          fi
+          # Before per-edition tags, V17 was tagged v<version> (v1.0.0).
+          if [[ "$EDITION" == "17" ]] && git rev-parse -q --verify "refs/tags/v$VERSION" >/dev/null; then
+            echo "::error::Tag v$VERSION already exists: $PACKAGE_ID $VERSION has already been released."
+            exit 1
+          fi
+          # Already on nuget.org without a tag means an earlier run failed after the push: re-running
+          # only creates the missing tag and GitHub release (the push below uses --skip-duplicate).
+          ID_LOWER=$(echo "$PACKAGE_ID" | tr '[:upper:]' '[:lower:]')
+          VERSION_LOWER=$(echo "$VERSION" | tr '[:upper:]' '[:lower:]')
+          if curl -fsSL "https://api.nuget.org/v3-flatcontainer/$ID_LOWER/index.json" 2>/dev/null \
+            | jq -e --arg v "$VERSION_LOWER" '.versions | index($v)' >/dev/null; then
+            echo "::warning::$PACKAGE_ID $VERSION is already on nuget.org; only the tag and GitHub release will be created."
+          fi
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: src/ContentCalendar.Backoffice/Client/package-lock.json
+
+      - name: Install client dependencies
+        working-directory: src/ContentCalendar.Backoffice/Client
+        run: npm ci --no-audit --no-fund
+
+      # Keep the backoffice manifest version in line with the NuGet version.
+      - name: Set umbraco-package.json version
+        working-directory: src/ContentCalendar.Backoffice/Client/public
+        run: |
+          jq --arg v "$VERSION" '.version = $v' umbraco-package.json > umbraco-package.tmp
+          mv umbraco-package.tmp umbraco-package.json
+
+      - name: Pack
+        run: dotnet pack "src/$PACKAGE_ID/$PACKAGE_ID.csproj" -c Release -o ./artifacts -p:Version=$VERSION
+
+      - name: Publish to NuGet
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          dotnet nuget push "./artifacts/$PACKAGE_ID.$VERSION.nupkg" \
+            --api-key "$NUGET_API_KEY" \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+
+      - name: Create tag and GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Release notes start at this edition's previous release (V17 also has the legacy v<version> tags).
+          PATTERNS=("ContentCalendar.V$EDITION-*")
+          if [[ "$EDITION" == "17" ]]; then PATTERNS+=("v[0-9]*"); fi
+          PREVIOUS_TAG=$(git tag --list "${PATTERNS[@]}" --sort=-creatordate | head -n 1)
+          NOTES_START=()
+          if [[ -n "$PREVIOUS_TAG" ]]; then NOTES_START=(--notes-start-tag "$PREVIOUS_TAG"); fi
+
+          git tag "$TAG"
+          git push origin "$TAG"
+          PRERELEASE=()
+          if [[ "$VERSION" == *-* ]]; then PRERELEASE=(--prerelease); fi
+          gh release create "$TAG" "./artifacts/$PACKAGE_ID.$VERSION.nupkg" \
+            --title "Content Calendar for Umbraco $EDITION ($PACKAGE_ID $VERSION)" \
+            --generate-notes "${NOTES_START[@]}" "${PRERELEASE[@]}"
