@@ -5,7 +5,8 @@
 Content Calendar shows which pages were **created**, are **scheduled to publish** or **scheduled to unpublish**, and were **deleted**, in a calendar that looks and feels like Umbraco itself. Use it as a dashboard in the Content section, or as a **Calendar** view for the child items of any page.
 
 [![Build](https://github.com/ZAAKS/ContentCalendar/actions/workflows/build.yml/badge.svg)](https://github.com/ZAAKS/ContentCalendar/actions/workflows/build.yml)
-[![Release](https://github.com/ZAAKS/ContentCalendar/actions/workflows/release.yml/badge.svg)](https://github.com/ZAAKS/ContentCalendar/actions/workflows/release.yml)
+[![Release V17](https://github.com/ZAAKS/ContentCalendar/actions/workflows/release-v17.yml/badge.svg)](https://github.com/ZAAKS/ContentCalendar/actions/workflows/release-v17.yml)
+[![Release V18](https://github.com/ZAAKS/ContentCalendar/actions/workflows/release-v18.yml/badge.svg)](https://github.com/ZAAKS/ContentCalendar/actions/workflows/release-v18.yml)
 
 | Package | NuGet |
 | ------- | ----- |
