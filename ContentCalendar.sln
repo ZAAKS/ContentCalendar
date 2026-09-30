@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
@@ -11,7 +11,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContentCalendar.Web17", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContentCalendar.V17", "src\ContentCalendar.V17\ContentCalendar.V17.csproj", "{42A18E5C-1593-4C55-A299-9A4738D73721}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContentCalendar.V18", "src\ContentCalendar.V18\ContentCalendar.V18.csproj", "{9E85966B-E071-4DCE-ADA7-763234D34432}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContentCalendar.Web18", "src\ContentCalendar.Web18\ContentCalendar.Web18.csproj", "{81D17E80-7CE0-45D5-A3E1-2017E55C7C0F}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ContentCalendar.Backoffice", "src\ContentCalendar.Backoffice\ContentCalendar.Backoffice.shproj", "{A377DDA0-DE2D-4B2C-A8AE-EB50AE50DB10}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		src\ContentCalendar.Backoffice\ContentCalendar.Backoffice.projitems*{a377dda0-de2d-4b2c-a8ae-eb50ae50db10}*SharedItemsImports = 13
+		src\ContentCalendar.Backoffice\ContentCalendar.Backoffice.projitems*{42a18e5c-1593-4c55-a299-9a4738d73721}*SharedItemsImports = 5
+		src\ContentCalendar.Backoffice\ContentCalendar.Backoffice.projitems*{9e85966b-e071-4dce-ada7-763234d34432}*SharedItemsImports = 5
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
@@ -57,6 +68,30 @@ Global
 		{42A18E5C-1593-4C55-A299-9A4738D73721}.Release|x64.Build.0 = Release|Any CPU
 		{42A18E5C-1593-4C55-A299-9A4738D73721}.Release|x86.ActiveCfg = Release|Any CPU
 		{42A18E5C-1593-4C55-A299-9A4738D73721}.Release|x86.Build.0 = Release|Any CPU
+		{9E85966B-E071-4DCE-ADA7-763234D34432}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E85966B-E071-4DCE-ADA7-763234D34432}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E85966B-E071-4DCE-ADA7-763234D34432}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9E85966B-E071-4DCE-ADA7-763234D34432}.Debug|x64.Build.0 = Debug|Any CPU
+		{9E85966B-E071-4DCE-ADA7-763234D34432}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9E85966B-E071-4DCE-ADA7-763234D34432}.Debug|x86.Build.0 = Debug|Any CPU
+		{9E85966B-E071-4DCE-ADA7-763234D34432}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E85966B-E071-4DCE-ADA7-763234D34432}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E85966B-E071-4DCE-ADA7-763234D34432}.Release|x64.ActiveCfg = Release|Any CPU
+		{9E85966B-E071-4DCE-ADA7-763234D34432}.Release|x64.Build.0 = Release|Any CPU
+		{9E85966B-E071-4DCE-ADA7-763234D34432}.Release|x86.ActiveCfg = Release|Any CPU
+		{9E85966B-E071-4DCE-ADA7-763234D34432}.Release|x86.Build.0 = Release|Any CPU
+		{81D17E80-7CE0-45D5-A3E1-2017E55C7C0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81D17E80-7CE0-45D5-A3E1-2017E55C7C0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81D17E80-7CE0-45D5-A3E1-2017E55C7C0F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{81D17E80-7CE0-45D5-A3E1-2017E55C7C0F}.Debug|x64.Build.0 = Debug|Any CPU
+		{81D17E80-7CE0-45D5-A3E1-2017E55C7C0F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{81D17E80-7CE0-45D5-A3E1-2017E55C7C0F}.Debug|x86.Build.0 = Debug|Any CPU
+		{81D17E80-7CE0-45D5-A3E1-2017E55C7C0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81D17E80-7CE0-45D5-A3E1-2017E55C7C0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81D17E80-7CE0-45D5-A3E1-2017E55C7C0F}.Release|x64.ActiveCfg = Release|Any CPU
+		{81D17E80-7CE0-45D5-A3E1-2017E55C7C0F}.Release|x64.Build.0 = Release|Any CPU
+		{81D17E80-7CE0-45D5-A3E1-2017E55C7C0F}.Release|x86.ActiveCfg = Release|Any CPU
+		{81D17E80-7CE0-45D5-A3E1-2017E55C7C0F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,5 +100,8 @@ Global
 		{B08A37F3-18FE-4ABE-A810-2A28FE3BE4AC} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{5EEF3825-E117-4607-A896-76E2261AC2A7} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{42A18E5C-1593-4C55-A299-9A4738D73721} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{9E85966B-E071-4DCE-ADA7-763234D34432} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{81D17E80-7CE0-45D5-A3E1-2017E55C7C0F} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{A377DDA0-DE2D-4B2C-A8AE-EB50AE50DB10} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 	EndGlobalSection
 EndGlobal

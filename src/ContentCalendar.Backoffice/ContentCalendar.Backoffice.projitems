@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>A377DDA0-DE2D-4B2C-A8AE-EB50AE50DB10</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>ContentCalendar.Backoffice</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Management API controller, response models and the persistence layer: identical for every supported major. -->
+    <Compile Include="$(MSBuildThisFileDirectory)**\*.cs" Exclude="$(MSBuildThisFileDirectory)Client\**;$(MSBuildThisFileDirectory)bin\**;$(MSBuildThisFileDirectory)obj\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- The backoffice client (built once by Client\ContentCalendar.Client.proj); listed only so it shows up in Visual Studio. -->
+    <None Include="$(MSBuildThisFileDirectory)Client\src\**\*;$(MSBuildThisFileDirectory)Client\public\**\*;$(MSBuildThisFileDirectory)Client\scripts\**\*;$(MSBuildThisFileDirectory)Client\package.json;$(MSBuildThisFileDirectory)Client\tsconfig.json;$(MSBuildThisFileDirectory)Client\vite.config.ts;$(MSBuildThisFileDirectory)Client\ContentCalendar.Client.proj" Pack="false" />
+  </ItemGroup>
+</Project>

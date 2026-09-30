@@ -4,6 +4,8 @@
 
 Content Calendar shows which pages were **created**, are **scheduled to publish** or **scheduled to unpublish**, and were **deleted**, in a calendar that looks and feels like Umbraco itself. Use it as a dashboard in the Content section, or as a **Calendar** view for the child items of any page.
 
+> This package is for **Umbraco 17**. Using Umbraco 18? Install [ContentCalendar.V18](https://www.nuget.org/packages/ContentCalendar.V18) instead.
+
 
 ![Content Calendar dashboard](https://raw.githubusercontent.com/ZAAKS/ContentCalendar/main/screenshots/dashboard.png)
 

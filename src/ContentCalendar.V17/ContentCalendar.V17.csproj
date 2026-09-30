@@ -3,20 +3,17 @@
     Content Calendar for Umbraco 17: the single installable NuGet package of the v17 edition.
       dotnet add package ContentCalendar.V17
 
-    One Razor class library holding everything that is specific to Umbraco 17:
-      - Composers/, Controllers/, Models/            Management API (controller, response models, Swagger document)
-      - Persistence/                                 the v17 IContentCalendarRepository (narrow SQL + permission filtering)
-      - Client/                                      backoffice front-end (Lit + TypeScript, built with Vite)
-      - wwwroot/App_Plugins/ContentCalendar          Vite output, shipped as static web assets
-                                                     (served at /App_Plugins/ContentCalendar/...)
-    Version-agnostic code lives in ContentCalendar.Core (shared with future editions). It is not a package of its own:
-    its DLL is embedded in this package (see CopyProjectReferencesToPackage below).
+    Only the Umbraco 17 specific code lives here:
+      - Composers/                                   DI registration and the Swashbuckle Swagger document
+    Shared with the other editions (see ContentCalendar.Backoffice.targets):
+      - ..\ContentCalendar.Backoffice                Management API controller, models, persistence and the backoffice client
+      - ..\ContentCalendar.Core                      version-agnostic models and query logic (DLL embedded in this package)
+      - wwwroot/App_Plugins/ContentCalendar          the built client, copied in at build time and shipped as static web assets
     The Umbraco reference pins the supported range, so installing into another major fails at NuGet restore.
   -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>ContentCalendar.V17</RootNamespace>
-    <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
     <IsPackable>true</IsPackable>
     <PackageId>ContentCalendar.V17</PackageId>
     <Title>Content Calendar</Title>
@@ -26,9 +23,6 @@
     <!-- We compile against the lowest supported Umbraco (17.2.0); its transitive advisories are resolved by
          whatever (newer) Umbraco version the consuming site uses, so only audit our direct dependencies. -->
     <NuGetAuditMode>direct</NuGetAuditMode>
-    <DefaultItemExcludes>$(DefaultItemExcludes);Client\**</DefaultItemExcludes>
-    <ClientDirectory>$(MSBuildProjectDirectory)\Client</ClientDirectory>
-    <ClientOutputFile>$(MSBuildProjectDirectory)\wwwroot\App_Plugins\ContentCalendar\content-calendar.js</ClientOutputFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -36,45 +30,6 @@
     <PackageReference Include="Umbraco.Cms.Api.Management" />
   </ItemGroup>
 
-  <ItemGroup>
-    <!-- PrivateAssets: no NuGet dependency on ContentCalendar.Core; its DLL ships inside this package instead. -->
-    <ProjectReference Include="..\ContentCalendar.Core\ContentCalendar.Core.csproj" PrivateAssets="all" />
-  </ItemGroup>
-
-  <PropertyGroup>
-    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
-  </PropertyGroup>
-
-  <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="BuildOnlySettings;ResolveReferences">
-    <ItemGroup>
-      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
-    </ItemGroup>
-  </Target>
-
-  <ItemGroup>
-    <None Include="Client\public\umbraco-package.json" Pack="false" />
-    <ClientBuildInput Include="Client\src\**\*;Client\public\**\*;Client\package.json;Client\package-lock.json;Client\vite.config.ts;Client\tsconfig.json" />
-  </ItemGroup>
-
-  <!--
-    Build the client with npm before static web assets are discovered, so `dotnet build`/`dotnet pack`
-    always ship a fresh bundle. Incremental: only runs when client sources are newer than the bundle.
-    Skip with -p:SkipClientBuild=true (e.g. while running `npm run watch` in Client/ yourself).
-  -->
-  <Target Name="ContentCalendarNpmInstall"
-          Condition="'$(SkipClientBuild)' != 'true' and !Exists('$(ClientDirectory)\node_modules')">
-    <Exec Command="npm ci --no-audit --no-fund" WorkingDirectory="$(ClientDirectory)" />
-  </Target>
-
-  <Target Name="ContentCalendarClientBuild"
-          BeforeTargets="ResolveStaticWebAssetsConfiguration;AssignTargetPaths"
-          DependsOnTargets="ContentCalendarNpmInstall"
-          Condition="'$(SkipClientBuild)' != 'true'"
-          Inputs="@(ClientBuildInput)"
-          Outputs="$(ClientOutputFile)">
-    <Exec Command="npm run build" WorkingDirectory="$(ClientDirectory)" />
-    <ItemGroup>
-      <Content Include="wwwroot\**" Exclude="@(Content)" />
-    </ItemGroup>
-  </Target>
+  <Import Project="..\ContentCalendar.Backoffice\ContentCalendar.Backoffice.projitems" Label="Shared" />
+  <Import Project="..\ContentCalendar.Backoffice\ContentCalendar.Backoffice.targets" />
 </Project>

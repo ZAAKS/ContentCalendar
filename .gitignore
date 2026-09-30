@@ -500,3 +500,11 @@ src/ContentCalendar.V17/wwwroot/
 
 # Local NuGet output
 /artifacts/
+
+# Umbraco 18 dev site runtime data
+src/ContentCalendar.Web18/umbraco/
+src/ContentCalendar.Web18/wwwroot/media/
+
+# Built backoffice client: Vite output (dist) and the copies in each edition's wwwroot (rebuilt by MSBuild)
+src/ContentCalendar.Backoffice/Client/dist/
+src/ContentCalendar.V18/wwwroot/

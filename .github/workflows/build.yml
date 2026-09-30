@@ -32,18 +32,27 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-          cache-dependency-path: src/ContentCalendar.V17/Client/package-lock.json
+          cache-dependency-path: src/ContentCalendar.Backoffice/Client/package-lock.json
 
       - name: Install client dependencies
-        working-directory: src/ContentCalendar.V17/Client
+        working-directory: src/ContentCalendar.Backoffice/Client
         run: npm ci --no-audit --no-fund
 
-      # Builds the backoffice client (npm run build) as part of the project build.
+      # Builds the shared backoffice client (npm run build) once and copies it into both editions.
       - name: Build
         run: dotnet build ContentCalendar.sln -c Release
 
       - name: Pack
-        run: dotnet pack src/ContentCalendar.V17/ContentCalendar.V17.csproj -c Release -o ./artifacts
+        run: |
+          dotnet pack src/ContentCalendar.V17/ContentCalendar.V17.csproj -c Release -o ./artifacts
+          dotnet pack src/ContentCalendar.V18/ContentCalendar.V18.csproj -c Release -o ./artifacts
+
+      # The client compiles against the lowest supported backoffice (17); also type-check it against 18.
+      - name: Type-check client against Umbraco 18 backoffice
+        working-directory: src/ContentCalendar.Backoffice/Client
+        run: |
+          npm i --no-save --no-audit --no-fund "@umbraco-cms/backoffice@^18"
+          npm run typecheck
 
       - name: Upload package
         uses: actions/upload-artifact@v4

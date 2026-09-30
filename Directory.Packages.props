@@ -2,25 +2,34 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageFloatingVersionsEnabled>true</CentralPackageFloatingVersionsEnabled>
-    <!-- Must match UmbracoAppLocalIcuVersion in ContentCalendar.Web17.csproj. -->
+    <!-- Must match UmbracoAppLocalIcuVersion in the ContentCalendar.WebXX dev site projects. -->
     <UmbracoAppLocalIcuVersion Condition="'$(UmbracoAppLocalIcuVersion)' == ''">72.1.0.3</UmbracoAppLocalIcuVersion>
     <!--
-      Umbraco 17 edition dependency range.
+      Umbraco 17 edition dependency range (the defaults below).
       Lower bound: 17.2.0 is the first 17.x release with IContentPermissionService.FilterAuthorizedAccessAsync,
-      which the v17 repository uses for batched permission filtering.
+      which the repository uses for batched permission filtering.
       Upper bound: exclusive 18.0.0 so NuGet refuses to install the v17 edition into a v16 or v18 site.
-      Future editions (v13, v18) add their own range property here and use VersionOverride in their projects.
     -->
     <Umbraco17VersionRange>[17.2.0, 18.0.0)</Umbraco17VersionRange>
+    <!--
+      Umbraco 18 edition dependency range, applied with VersionOverride in ContentCalendar.V18 (Central Package
+      Management allows one version per package, so the v17 range stays the default).
+      Lower bound: 18.0.0 already has every API the edition uses, including AddBackOfficeOpenApiDocument.
+      Upper bound: exclusive 19.0.0.
+    -->
+    <Umbraco18VersionRange>[18.0.0, 19.0.0)</Umbraco18VersionRange>
+    <!-- Umbraco 18 dev site (ContentCalendar.Web18) versions, applied with VersionOverride. -->
+    <Umbraco18DevSiteVersion>18.2.0</Umbraco18DevSiteVersion>
+    <!-- Clean starter kit by Paul Seal: 7.x targets Umbraco 17, 8.x targets Umbraco 18. -->
+    <Clean18Version>8.0.1</Clean18Version>
   </PropertyGroup>
-  <ItemGroup Label="Umbraco 17 edition (package code)">
+  <ItemGroup Label="Edition packages (package code)">
     <PackageVersion Include="Umbraco.Cms.Api.Management" Version="$(Umbraco17VersionRange)" />
   </ItemGroup>
-  <ItemGroup Label="Umbraco 17 dev site (not shipped)">
+  <ItemGroup Label="Dev sites (not shipped); Web18 overrides these with the Umbraco 18 versions above">
     <PackageVersion Include="Umbraco.Cms" Version="17.7.0" />
     <PackageVersion Include="Umbraco.Cms.DevelopmentMode.Backoffice" Version="17.7.0" />
     <PackageVersion Include="Microsoft.ICU.ICU4C.Runtime" Version="$(UmbracoAppLocalIcuVersion)" />
-    <!-- Clean starter kit by Paul Seal: 7.x targets Umbraco 17 (8.x is Umbraco 18). -->
     <PackageVersion Include="Clean" Version="7.0.8" />
   </ItemGroup>
   <ItemGroup Label="Tests">

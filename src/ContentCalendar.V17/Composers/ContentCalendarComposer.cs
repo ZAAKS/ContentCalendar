@@ -1,4 +1,5 @@
-using ContentCalendar.V17.Persistence;
+using ContentCalendar.Backoffice;
+using ContentCalendar.Backoffice.Persistence;
 using ContentCalendar.Core.Abstractions;
 using ContentCalendar.Core.Models;
 using ContentCalendar.Core.Services;
@@ -56,7 +57,7 @@ public sealed class ContentCalendarOperationIdHandler : IOperationIdHandler
 {
     public bool CanHandle(ApiDescription apiDescription)
         => apiDescription.ActionDescriptor is ControllerActionDescriptor descriptor
-           && descriptor.ControllerTypeInfo.Namespace?.StartsWith("ContentCalendar.V17", StringComparison.Ordinal) is true;
+           && descriptor.ControllerTypeInfo.Namespace?.StartsWith("ContentCalendar.", StringComparison.Ordinal) is true;
 
     public string Handle(ApiDescription apiDescription)
         => apiDescription.ActionDescriptor is ControllerActionDescriptor descriptor
